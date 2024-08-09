@@ -5,9 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFSandbox"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
-        Closing="Window_Closing" Topmost="True"  AllowsTransparency="True" WindowStyle="None" Background="Transparent" Deactivated="Window_Deactivated">
-	<Grid>
-		<Button Content="Button" HorizontalAlignment="Left" Margin="156,217,0,0" VerticalAlignment="Top" Height="166" Width="312" FontSize="48" Click="Button_Click"/>
-	</Grid>
+        Title="MainWindow" Height="400" Width="200"
+        Closing="Window_Closing" Topmost="True" Deactivated="Window_Deactivated" Loaded="Window_Loaded" Background="White" WindowStyle="None" MouseLeftButtonDown="Window_MouseLeftButtonDown" MouseLeftButtonUp="Window_MouseLeftButtonUp">
+	<Grid/>
 </Window>

@@ -15,5 +15,3 @@ C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\obj\Debug\WPFSandbox.exe
 C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\obj\Debug\WPFSandbox.pdb
 C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\obj\Debug\Window1.g.cs
 C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\obj\Debug\Window1.baml
-C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\bin\Debug\Gma.System.MouseKeyHook.dll
-C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\obj\Debug\WPFSandbox.csproj.Up2Date

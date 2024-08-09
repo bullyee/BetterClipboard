@@ -1,11 +1,11 @@
-﻿using Gma.System.MouseKeyHook;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
+using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,6 +23,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using static WPFSandbox.InterceptKeys;
 
 namespace WPFSandbox
 {
@@ -34,27 +35,21 @@ namespace WPFSandbox
         // KListener = new KeyboardListener();
         public MainWindow()
         {
-            this.WindowState = WindowState.Minimized;
-
-            this.Top = 0;
-            this.Left = 0;
+            this.Height = 400;
+            this.Width = 200;
+            this.Top = SystemParameters.MaximizedPrimaryScreenHeight/2 - this.Height/2;
+            this.Left = SystemParameters.MaximizedPrimaryScreenWidth - this.Width;
 
             InitializeComponent();
-            StartLoop();
+            //StartLoop();
             //KListener.KeyDown += new RawKeyEventHandler(KListener_KeyDown);
-            //Thread thread = new Thread(detect);
-            //thread.Start();
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            //String clipboard_text = System.Windows.Clipboard.GetText();
-            //System.Console.WriteLine($"current clipboard text: {clipboard_text}");
+            Thread thread = new Thread(detect);
+            thread.Start();
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            //KListener.Dispose();
+            RemoveClipboardFormatListener(hwndSource.Handle);
             Closing -= Window_Closing;
             e.Cancel = true;
             var anim = new DoubleAnimation(toValue: 0, (Duration)TimeSpan.FromSeconds(0.5));
@@ -62,22 +57,30 @@ namespace WPFSandbox
             this.BeginAnimation(UIElement.OpacityProperty, anim);
         }
 
-        void KListener_KeyDown(object sender, RawKeyEventArgs args)
+        private void ShowPopup()
         {
-            Console.WriteLine(args.ToString());
+            Window new_window = (Window)Application.LoadComponent(new Uri("Window1.xaml", UriKind.Relative));
+            Point mp = GetMousePosition();
+            Console.WriteLine(mp.ToString());
+            new_window.Top = mp.Y / 1.5;
+            new_window.Left = (mp.X - new_window.Width) / 1.5; // adjust to divide by system zoom some time!!
+            new_window.Show();
+            new_window.Close();
         }
 
-        private async void StartLoop()
+        // code for monitering 
+        private void ClipboardMonitering()
         {
-            while (true) {
-                await Task.Delay(1000);
-                Window new_window = (Window)Application.LoadComponent(new Uri("Window1.xaml", UriKind.Relative));
-                Point mp = GetMousePosition();
-                Console.WriteLine(mp.ToString());
-                new_window.Top = mp.Y/1.5;
-                new_window.Left = mp.X/1.5; // adjust to divide by system zoom some time!!
-                new_window.Show();
-                new_window.Close();
+            IDataObject prev_obj = Clipboard.GetDataObject();
+            while (true)
+            {
+                if (Clipboard.IsCurrent(prev_obj) is false)
+                {
+                    prev_obj = Clipboard.GetDataObject();
+                    Console.WriteLine(prev_obj.ToString());
+                    ShowPopup();
+                }
+                Thread.Sleep(50);
             }
         }
 
@@ -86,25 +89,29 @@ namespace WPFSandbox
         public static extern short GetKeyState(int vKey);
         private void detect()
         {
-            short oldState = GetKeyState(0x4C);
+            bool prev_state = GetKeyState(0x11) < 0 && GetKeyState(0xC0) < 0 && GetKeyState(0x12) < 0;
             while (true)
             {
-                short newState = GetKeyState(0x4C);
-                if (oldState != newState)
+                bool curr_state =  GetKeyState(0x11) < 0  && GetKeyState(0xC0) < 0 && GetKeyState(0x12) < 0;
+                if (prev_state != curr_state)
                 {
-                    oldState = newState;
-                    if (newState < 0)
+                    prev_state = curr_state;
+                    if (curr_state is true)
                     {
-                        onLClick();
+                        Dispatcher.Invoke(onClick);
                     }
                 }
                 Thread.Sleep(50);
             }
         }
 
-        private void onLClick()
+        private void onClick()
         {
-            Console.WriteLine("L clicked!");
+            if (this.WindowState == WindowState.Normal)
+            {
+                this.WindowState = WindowState.Minimized;
+            }
+            else this.WindowState = WindowState.Normal;
         }
 
 
@@ -132,6 +139,94 @@ namespace WPFSandbox
         private void Window_Deactivated(object sender, EventArgs e)
         {
             this.Topmost = true;
+        }
+
+
+        // clipboard hook managements
+        private HwndSource hwndSource;
+        private const int WM_CLIPBOARDUPDATE = 0x031D;
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool AddClipboardFormatListener(IntPtr hwnd);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool RemoveClipboardFormatListener(IntPtr hwnd);
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            hwndSource = PresentationSource.FromVisual(this) as HwndSource;
+            hwndSource.AddHook(WndProc); // Add the hook
+
+            // Register for clipboard notifications
+            AddClipboardFormatListener(hwndSource.Handle);
+        }
+
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref
+ bool handled)
+        {
+            if (msg == WM_CLIPBOARDUPDATE)
+            {
+                // Clipboard has been updated
+                Dispatcher.Invoke(() =>
+                {
+                    ShowPopup();
+                    Console.WriteLine(Clipboard.GetText());
+                });
+            }
+
+            return IntPtr.Zero;
+        }
+
+        // drag window code
+        private DispatcherTimer moveTimer;
+        private Point mp;
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (GetKeyState(0x10) < 0)
+            {
+                Mouse.OverrideCursor = Cursors.ScrollAll;
+                StartDrag();
+            }
+        }
+
+        private void Window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ReleaseDrag();
+        }
+
+        private void StartDrag()
+        {
+            mp = GetMousePosition();
+
+            moveTimer = new DispatcherTimer();
+            moveTimer.Interval = TimeSpan.FromMilliseconds(1);
+            moveTimer.Tick += WindowFollow;
+            moveTimer.Start();
+        }
+
+        private void WindowFollow(object sender, EventArgs e)
+        {
+            if (GetKeyState(0x10) >= 0)
+            {
+                ReleaseDrag();
+            }
+            Point curr_mp = GetMousePosition();
+
+            double deltaX = curr_mp.X - mp.X;
+            double deltaY = curr_mp.Y - mp.Y;
+
+            Left += deltaX / 1.5;
+            Top += deltaY / 1.5;
+
+            mp = curr_mp;
+        }
+
+        private void ReleaseDrag()
+        {
+            Mouse.OverrideCursor = Cursors.Arrow;
+            moveTimer.Stop();
         }
     }
 }
