@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gma.System.MouseKeyHook;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,6 +31,7 @@ namespace WPFSandbox
     /// </summary>
     public partial class MainWindow : Window
     {
+        // KListener = new KeyboardListener();
         public MainWindow()
         {
             this.WindowState = WindowState.Minimized;
@@ -38,6 +41,9 @@ namespace WPFSandbox
 
             InitializeComponent();
             StartLoop();
+            //KListener.KeyDown += new RawKeyEventHandler(KListener_KeyDown);
+            //Thread thread = new Thread(detect);
+            //thread.Start();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -48,11 +54,17 @@ namespace WPFSandbox
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
+            //KListener.Dispose();
             Closing -= Window_Closing;
             e.Cancel = true;
             var anim = new DoubleAnimation(toValue: 0, (Duration)TimeSpan.FromSeconds(0.5));
             anim.Completed += (s, _) => this.Close();
             this.BeginAnimation(UIElement.OpacityProperty, anim);
+        }
+
+        void KListener_KeyDown(object sender, RawKeyEventArgs args)
+        {
+            Console.WriteLine(args.ToString());
         }
 
         private async void StartLoop()
@@ -69,6 +81,35 @@ namespace WPFSandbox
             }
         }
 
+        // code for detecting a certain keystate
+        [DllImport("user32.dll")]
+        public static extern short GetKeyState(int vKey);
+        private void detect()
+        {
+            short oldState = GetKeyState(0x4C);
+            while (true)
+            {
+                short newState = GetKeyState(0x4C);
+                if (oldState != newState)
+                {
+                    oldState = newState;
+                    if (newState < 0)
+                    {
+                        onLClick();
+                    }
+                }
+                Thread.Sleep(50);
+            }
+        }
+
+        private void onLClick()
+        {
+            Console.WriteLine("L clicked!");
+        }
+
+
+
+        // code for global mouse position detection
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool GetCursorPos(ref Win32Point pt);
@@ -87,6 +128,7 @@ namespace WPFSandbox
             return new Point(w32Mouse.X, w32Mouse.Y);
         }
 
+        // keeps window at topmost
         private void Window_Deactivated(object sender, EventArgs e)
         {
             this.Topmost = true;
