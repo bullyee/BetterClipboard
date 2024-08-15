@@ -7,8 +7,20 @@
         xmlns:local="clr-namespace:WPFSandbox"
         mc:Ignorable="d"
         Title="MainWindow" Height="400" Width="200"
-        Closing="Window_Closing" Topmost="True" Deactivated="Window_Deactivated" Loaded="Window_Loaded" Background="White" WindowStyle="None" MouseLeftButtonDown="Window_MouseLeftButtonDown" MouseLeftButtonUp="Window_MouseLeftButtonUp">
+        Closing="Window_Closing" Topmost="True" Deactivated="Window_Deactivated" Loaded="Window_Loaded" Background="White" WindowStyle="None" MouseLeftButtonDown="Window_MouseLeftButtonDown" MouseLeftButtonUp="Window_MouseLeftButtonUp" ShowInTaskbar="False">
     <Grid>
+        <tb:TaskbarIcon
+            IconSource="/7978227a.ico"
+            ToolTipText="Better Clipboard"
+            x:Name="taskbar">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="show" x:Name="taskbar_toggle"/>
+                    <MenuItem Header="close" x:Name="taskbar_close"/>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+
+        </tb:TaskbarIcon>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
                     HorizontalAlignment="Stretch" 
                     VerticalAlignment="Stretch"

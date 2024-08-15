@@ -27,6 +27,7 @@ using System.Windows.Threading;
 using static WPFSandbox.InterceptKeys;
 using System.Drawing; // 引用 System.Drawing 命名空間
 using System.Windows.Media.Imaging;
+using System.Diagnostics.Eventing.Reader;
 
 namespace WPFSandbox
 {
@@ -36,7 +37,7 @@ namespace WPFSandbox
     public partial class MainWindow : Window
     {
         public MainWindow()
-        {
+        { 
             this.Height = 400;
             this.Width = 200;
             this.Top = SystemParameters.MaximizedPrimaryScreenHeight/2 - this.Height/2;
@@ -46,10 +47,26 @@ namespace WPFSandbox
             Thread thread = new Thread(detect);
             thread.Start();
 
-            TaskbarIcon tbi = new TaskbarIcon();
-            ImageSource img = new BitmapImage(new Uri("pack://application:,,,/WPFSandbox;component//7978227a.ico"));
-            tbi.IconSource = img;
-            tbi.ToolTipText = "hello world";
+            taskbar_close.Click += tb_close;
+            taskbar_toggle.Click += tb_toggle;
+        }
+
+        private void tb_close(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+        private void tb_toggle(object sender, RoutedEventArgs e)
+        {
+            if (this.IsVisible)
+            {
+                this.Hide();
+                taskbar_toggle.Header = "show";
+            }
+            else
+            {
+                taskbar_toggle.Header = "hide";
+                this.Show();
+            }
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
@@ -112,11 +129,14 @@ namespace WPFSandbox
 
         private void onClick()
         {
-            if (this.WindowState == WindowState.Normal)
+            if (this.IsVisible)
             {
-                this.WindowState = WindowState.Minimized;
+                this.Hide();
             }
-            else this.WindowState = WindowState.Normal;
+            else
+            {
+                this.Show();
+            }
         }
 
 

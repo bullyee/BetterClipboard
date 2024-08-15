@@ -19,3 +19,4 @@ C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\bin\Debug\Hardcodet.NotifyIcon.W
 C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\bin\Debug\Hardcodet.NotifyIcon.Wpf.xml
 C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\obj\Debug\WPFSandbox.csproj.Up2Date
 C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\obj\Debug\WPFSandbox_Content.g.cs
+C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\obj\Debug\GeneratedInternalTypeHelper.g.cs
