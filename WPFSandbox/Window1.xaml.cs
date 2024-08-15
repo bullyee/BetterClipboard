@@ -30,7 +30,7 @@ namespace WPFSandbox
         {
             Closing -= Window_Closing;
             e.Cancel = true;
-            var anim = new DoubleAnimation(toValue: 0, (Duration)TimeSpan.FromSeconds(1));
+            var anim = new DoubleAnimation(toValue: 0, (Duration)TimeSpan.FromSeconds(1.5));
             anim.Completed += (s, _) => this.Close();
             this.BeginAnimation(UIElement.OpacityProperty, anim);
         }

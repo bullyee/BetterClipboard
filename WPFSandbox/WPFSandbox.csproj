@@ -39,6 +39,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Hardcodet.NotifyIcon.Wpf, Version=1.1.0.0, Culture=neutral, PublicKeyToken=682384a853a08aad, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.1.0\lib\net472\Hardcodet.NotifyIcon.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -98,6 +101,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -108,6 +112,19 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="netstandard" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="圖片1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="圖片2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="圖片3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="7978227a.ico" />
+    <Content Include="icon.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

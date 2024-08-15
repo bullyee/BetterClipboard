@@ -15,3 +15,7 @@ C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\obj\Debug\WPFSandbox.exe
 C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\obj\Debug\WPFSandbox.pdb
 C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\obj\Debug\Window1.g.cs
 C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\obj\Debug\Window1.baml
+C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\bin\Debug\Hardcodet.NotifyIcon.Wpf.dll
+C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\bin\Debug\Hardcodet.NotifyIcon.Wpf.xml
+C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\obj\Debug\WPFSandbox.csproj.Up2Date
+C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\obj\Debug\WPFSandbox_Content.g.cs

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFSandbox"
         mc:Ignorable="d"
-        Title="Window1" Height="39" Width="116" Foreground="Black"
+        Title="Window1" Height="65" Width="104" Foreground="Black"
         Closing="Window_Closing" WindowStyle="None" AllowsTransparency="True" Background="Transparent" Topmost="True" ShowInTaskbar="False" ResizeMode="NoResize" ShowActivated="False">
-    <Label Content="Copied!!" HorizontalAlignment="Center" VerticalAlignment="Center" Height="40" Width="119" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="24" RenderTransformOrigin="0.009,0.012" Foreground="#FFE2FF00"/>
+    <Image Source="/圖片3.png" Margin="-2,0,-2,0"/>
 </Window>

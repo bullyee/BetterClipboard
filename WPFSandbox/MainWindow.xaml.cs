@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hardcodet.Wpf.TaskbarNotification;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -24,6 +25,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using static WPFSandbox.InterceptKeys;
+using System.Drawing; // 引用 System.Drawing 命名空間
+using System.Windows.Media.Imaging;
 
 namespace WPFSandbox
 {
@@ -32,7 +35,6 @@ namespace WPFSandbox
     /// </summary>
     public partial class MainWindow : Window
     {
-        // KListener = new KeyboardListener();
         public MainWindow()
         {
             this.Height = 400;
@@ -41,10 +43,13 @@ namespace WPFSandbox
             this.Left = SystemParameters.MaximizedPrimaryScreenWidth - this.Width;
 
             InitializeComponent();
-            //StartLoop();
-            //KListener.KeyDown += new RawKeyEventHandler(KListener_KeyDown);
             Thread thread = new Thread(detect);
             thread.Start();
+
+            TaskbarIcon tbi = new TaskbarIcon();
+            ImageSource img = new BitmapImage(new Uri("pack://application:,,,/WPFSandbox;component//7978227a.ico"));
+            tbi.IconSource = img;
+            tbi.ToolTipText = "hello world";
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
@@ -171,7 +176,8 @@ namespace WPFSandbox
                 Dispatcher.Invoke(() =>
                 {
                     ShowPopup();
-                    Console.WriteLine(Clipboard.GetText());
+                    TextBlock newitem = new TextBlock{ Text = Clipboard.GetText() };
+                    clipboard_stack_panel.Children.Add(newitem);
                 });
             }
 
@@ -225,8 +231,11 @@ namespace WPFSandbox
 
         private void ReleaseDrag()
         {
-            Mouse.OverrideCursor = Cursors.Arrow;
-            moveTimer.Stop();
+            if (moveTimer != null)
+            {
+                Mouse.OverrideCursor = Cursors.Arrow;
+                moveTimer.Stop();
+            }
         }
     }
 }
