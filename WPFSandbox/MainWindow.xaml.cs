@@ -24,9 +24,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using static WPFSandbox.InterceptKeys;
 using System.Drawing; // 引用 System.Drawing 命名空間
-using System.Windows.Media.Imaging;
 using System.Diagnostics.Eventing.Reader;
 
 namespace WPFSandbox
@@ -36,6 +34,9 @@ namespace WPFSandbox
     /// </summary>
     public partial class MainWindow : Window
     {
+        Thread thread;
+        private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
         public MainWindow()
         { 
             this.Height = 400;
@@ -44,7 +45,7 @@ namespace WPFSandbox
             this.Left = SystemParameters.MaximizedPrimaryScreenWidth - this.Width;
 
             InitializeComponent();
-            Thread thread = new Thread(detect);
+            thread = new Thread(() => detect(cancellationTokenSource.Token));
             thread.Start();
 
             taskbar_close.Click += tb_close;
@@ -53,7 +54,7 @@ namespace WPFSandbox
 
         private void tb_close(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Window_Closing(this, new CancelEventArgs());
         }
         private void tb_toggle(object sender, RoutedEventArgs e)
         {
@@ -71,12 +72,17 @@ namespace WPFSandbox
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            RemoveClipboardFormatListener(hwndSource.Handle);
             Closing -= Window_Closing;
             e.Cancel = true;
             var anim = new DoubleAnimation(toValue: 0, (Duration)TimeSpan.FromSeconds(0.5));
             anim.Completed += (s, _) => this.Close();
             this.BeginAnimation(UIElement.OpacityProperty, anim);
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            RemoveClipboardFormatListener(hwndSource.Handle);
+            cancellationTokenSource.Cancel();
         }
 
         private void ShowPopup()
@@ -90,30 +96,18 @@ namespace WPFSandbox
             new_window.Close();
         }
 
-        // code for monitering 
-        private void ClipboardMonitering()
-        {
-            IDataObject prev_obj = Clipboard.GetDataObject();
-            while (true)
-            {
-                if (Clipboard.IsCurrent(prev_obj) is false)
-                {
-                    prev_obj = Clipboard.GetDataObject();
-                    Console.WriteLine(prev_obj.ToString());
-                    ShowPopup();
-                }
-                Thread.Sleep(50);
-            }
-        }
-
         // code for detecting a certain keystate
         [DllImport("user32.dll")]
         public static extern short GetKeyState(int vKey);
-        private void detect()
+        private void detect(CancellationToken cancellationToken)
         {
             bool prev_state = GetKeyState(0x11) < 0 && GetKeyState(0xC0) < 0 && GetKeyState(0x12) < 0;
             while (true)
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break; 
+                }
                 bool curr_state =  GetKeyState(0x11) < 0  && GetKeyState(0xC0) < 0 && GetKeyState(0x12) < 0;
                 if (prev_state != curr_state)
                 {
@@ -257,5 +251,7 @@ namespace WPFSandbox
                 moveTimer.Stop();
             }
         }
+
+
     }
 }

@@ -1,7 +1,7 @@
 ﻿WPFSandbox
 
 
-exe
+winexe
 C#
 .cs
 C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\obj\Debug\
@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\AZh\source\repos\WPFSandbox\WPFSandbox\App.xaml
-22080152624
+3-49310628
 11015441494
-8-1871531023
+8790514868
 15541287564
-MainWindow.xaml;Window1.xaml;
+MainWindow.xaml;ClipboardItemControl.xaml;Window1.xaml;
 
-True
+False
 

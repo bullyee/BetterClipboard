@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="WPFSandbox.UserControl1"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPFSandbox"
+             mc:Ignorable="d" Height="286" Width="827">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="10*"/>
+        </Grid.ColumnDefinitions>
+        <Rectangle HorizontalAlignment="Left" Height="286" Stroke="Black" VerticalAlignment="Center" Width="827" Fill="#FF828282" RadiusX="50" RadiusY="50" Grid.ColumnSpan="2"/>
+
+    </Grid>
+</UserControl>
