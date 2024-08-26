@@ -4,16 +4,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WPFSandbox"
-             mc:Ignorable="d" Height="286" Width="827">
+             mc:Ignorable="d" Height="80
+             " Width="280">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition/>
+            <RowDefinition Height="2"/>
+            <RowDefinition />
+            <RowDefinition Height="2"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10"/>
-            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="2"/>
+            <ColumnDefinition />
+            <ColumnDefinition Width="2"/>
         </Grid.ColumnDefinitions>
-        <Rectangle HorizontalAlignment="Left" Height="286" Stroke="Black" VerticalAlignment="Center" Width="827" Fill="#FF828282" RadiusX="50" RadiusY="50" Grid.ColumnSpan="2"/>
+        <Rectangle Fill="#FF828282" RadiusX="10" RadiusY="10" HorizontalAlignment="Center" Width="276" Grid.Column="1" Height="76" VerticalAlignment="Center" Grid.Row="1"/>
 
     </Grid>
 </UserControl>
